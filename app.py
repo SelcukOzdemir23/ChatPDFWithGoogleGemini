@@ -42,15 +42,26 @@ def get_vector_store(text_chunks):
 def get_conversational_chain():
 
     prompt_template = """
-    
-    Context:\n {context}?\n
-    Question: \n{question}\n
+Use the following pieces of information to answer the user's question.\n\n
 
-    Answer:
+Context: {context}
+Question: {question}
+
+You are a helper chatbot. You answer people's questions. You have knowledge about everything in general.
+
+If you can't find information in the PDF, use your own knowledge to answer questions that are indirectly related to the PDF. 
+However, make sure to connect your answers to the PDF's content, even when using external knowledge.
+
+Try your best to give the answer. 
+Also try to add some your own wordings the describe the answer.
+
+Helpful Answer:
+
+
     """
 
     model = ChatGoogleGenerativeAI(model="gemini-pro",
-                             temperature=0.3)
+                             temperature=0.4)
 
     prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
@@ -88,7 +99,14 @@ def main():
         user_input(user_question)
 
     with st.sidebar:
-        st.title("Menu:")
+
+
+
+        st.audio("music.mp3", format='audio/mp3')
+
+        st.image("img.jpg")
+        st.write("---")
+        
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
         if st.button("Submit & Process"):
             with st.spinner("Processing..."):
